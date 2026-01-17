@@ -198,9 +198,10 @@ class YoutubeCache {
 			});
 
 			dlVideo.then((v) -> {
-				final name = cache.findFile(n -> n.startsWith(inVideoName) && n.endsWith(".mp4")) ?? {
+				final name = cache.findFile(n -> n.startsWith(inVideoName)) ?? {
 					final err = 'Error: cannot find downloaded file with prefix $inVideoName';
 					cache.logWithAdmins(client, err);
+					cancelProgress(clientName);
 					return;
 				};
 				FileSystem.rename('${cache.cacheDir}/$name', '${cache.cacheDir}/$outName');

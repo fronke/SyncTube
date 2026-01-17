@@ -409,17 +409,21 @@ class HttpServer {
 	function proxyUrl(req:IncomingMessage, res:ServerResponse):Bool {
 		final url = req.url.replace("/proxy?url=", "");
 		final proxy = proxyRequest(url, req, res, proxyRes -> {
-			final url = proxyRes.headers["location"] ?? return false;
-			final proxy2 = proxyRequest(url, req, res, proxyRes -> false);
+			final redirectUrl = proxyRes.headers["location"] ?? return false;
+			final proxy2 = proxyRequest(redirectUrl, req, res, proxyRes -> false);
 			if (proxy2 == null) {
-				res.end('Proxy error: multiple redirects for url $url');
+				if (!res.headersSent) {
+					res.end('Proxy error: multiple redirects for url $redirectUrl');
+				}
 				return true;
 			}
 			req.pipe(proxy2);
+			req.on("error", () -> proxy2.destroy());
 			return true;
 		});
 		if (proxy == null) return false;
 		req.pipe(proxy);
+		req.on("error", () -> proxy.destroy());
 		return true;
 	}
 
@@ -443,16 +447,34 @@ class HttpServer {
 		};
 		req.headers["referer"] = url.toString();
 		req.headers["host"] = url.hostname;
+
 		final request = url.protocol == "https:" ? Https.request : Http.request;
 		final proxy = request(options, proxyRes -> {
-			if (cancelProxyRequest(proxyRes)) return;
+			if (cancelProxyRequest(proxyRes)) {
+				proxyRes.destroy();
+				return;
+			}
 			proxyRes.headers["content-type"] = "application/octet-stream";
 			res.writeHead(proxyRes.statusCode, proxyRes.headers);
 			proxyRes.pipe(res);
+
+			// clean up when response ends
+			proxyRes.on("end", () -> {
+				if (!res.writableEnded) res.end();
+			});
 		});
+
 		proxy.on("error", err -> {
-			res.end('Proxy error: ${url.href}');
+			proxy.destroy();
+			if (!res.headersSent) {
+				res.end('Proxy error: ${url.href}');
+			}
 		});
+		// clean up when client disconnects (seeking/abort)
+		res.on("close", () -> {
+			if (!proxy.destroyed) proxy.destroy();
+		});
+
 		return proxy;
 	}
 

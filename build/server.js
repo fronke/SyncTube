@@ -4287,16 +4287,24 @@ server_HttpServer.prototype = {
 				return false;
 			});
 			if(proxy2 == null) {
-				res.end("Proxy error: multiple redirects for url " + tmp);
+				if(!res.headersSent) {
+					res.end("Proxy error: multiple redirects for url " + tmp);
+				}
 				return true;
 			}
 			req.pipe(proxy2);
+			req.on("error",function() {
+				return proxy2.destroy();
+			});
 			return true;
 		});
 		if(proxy == null) {
 			return false;
 		}
 		req.pipe(proxy);
+		req.on("error",function() {
+			return proxy.destroy();
+		});
 		return true;
 	}
 	,proxyRequest: function(url,req,res,cancelProxyRequest) {
@@ -4315,14 +4323,28 @@ server_HttpServer.prototype = {
 		var request = url1.protocol == "https:" ? js_node_Https.request : js_node_Http.request;
 		var proxy = request(options,function(proxyRes) {
 			if(cancelProxyRequest(proxyRes)) {
+				proxyRes.destroy();
 				return;
 			}
 			proxyRes.headers["content-type"] = "application/octet-stream";
 			res.writeHead(proxyRes.statusCode,proxyRes.headers);
 			proxyRes.pipe(res);
+			proxyRes.on("end",function() {
+				if(!res.writableEnded) {
+					res.end();
+				}
+			});
 		});
 		proxy.on("error",function(err) {
-			res.end("Proxy error: " + url1.href);
+			proxy.destroy();
+			if(!res.headersSent) {
+				res.end("Proxy error: " + url1.href);
+			}
+		});
+		res.on("close",function() {
+			if(!proxy.destroyed) {
+				proxy.destroy();
+			}
 		});
 		return proxy;
 	}
@@ -6628,14 +6650,11 @@ server_cache_YoutubeCache.prototype = {
 			});
 			dlVideo.then(function(v) {
 				var tmp = _gthis.cache.findFile(function(n) {
-					if(StringTools.startsWith(n,inVideoName)) {
-						return StringTools.endsWith(n,".mp4");
-					} else {
-						return false;
-					}
+					return StringTools.startsWith(n,inVideoName);
 				});
 				if(tmp == null) {
 					_gthis.cache.logWithAdmins(client,"Error: cannot find downloaded file with prefix " + inVideoName);
+					_gthis.cancelProgress(clientName);
 					return;
 				}
 				js_node_Fs.renameSync("" + _gthis.cache.cacheDir + "/" + tmp,"" + _gthis.cache.cacheDir + "/" + outName);
@@ -6645,7 +6664,7 @@ server_cache_YoutubeCache.prototype = {
 			});
 		};
 		this.getInfoAsync(url,useCookies).then(onGetInfo).catch(function(err) {
-			haxe_Log.trace(err,{ fileName : "src/server/cache/YoutubeCache.hx", lineNumber : 214, className : "server.cache.YoutubeCache", methodName : "cacheYoutubeVideo"});
+			haxe_Log.trace(err,{ fileName : "src/server/cache/YoutubeCache.hx", lineNumber : 215, className : "server.cache.YoutubeCache", methodName : "cacheYoutubeVideo"});
 			useCookies = true;
 			return _gthis.getInfoAsync(url,useCookies).then(onGetInfo).catch(function(err) {
 				_gthis.cleanYtInputFiles(inVideoName);
