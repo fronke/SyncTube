@@ -91,8 +91,16 @@ class Player {
 			}
 			if (btn.classList.contains("qbtn-next")) {
 				main.send({
-					type: SetNextItem,
-					setNextItem: {
+					type: MoveItemUp,
+					moveItemUp: {
+						pos: i
+					}
+				});
+			}
+			if (btn.classList.contains("qbtn-down")) {
+				main.send({
+					type: MoveItemDown,
+					moveItemDown: {
 						pos: i
 					}
 				});
@@ -118,6 +126,22 @@ class Player {
 		videoItemsEl.removeChild(next);
 		Utils.insertAtIndex(videoItemsEl, next, videoList.pos + 1);
 	}
+
+	public function moveItemDown(pos:Int):Void {
+		videoList.moveItemDown(pos);
+
+		final item = videoItemsEl.children[pos];
+		videoItemsEl.removeChild(item);
+		Utils.insertAtIndex(videoItemsEl, item, pos + 1);
+	}
+
+	public function moveItemUp(pos:Int):Void {
+        videoList.moveItemUp(pos);
+
+        final item = videoItemsEl.children[pos];
+        videoItemsEl.removeChild(item);
+        Utils.insertAtIndex(videoItemsEl, item, pos - 1);
+    }
 
 	public function toggleItemType(pos:Int):Void {
 		videoList.toggleItemType(pos);
@@ -422,8 +446,10 @@ class Player {
 					<h4><a class="qe_title" href="$url" target="_blank">${item.title.htmlEscape()}</a></h4>
 				</header>
 				<span class="controls">
+				    <span style="margin-right: 15px;">${item.author}</span>
 					<button class="qbtn-play" title="${Lang.get("play")}"><ion-icon name="play"></ion-icon></button>
-					<button class="qbtn-next" title="${Lang.get("setNext")}"><ion-icon name="arrow-up"></ion-icon></button>
+					<button class="qbtn-next" title="${Lang.get("moveUp")}"><ion-icon name="arrow-up"></ion-icon></button>
+					<button class="qbtn-down" title="${Lang.get("moveDown")}"><ion-icon name="arrow-down"></ion-icon></button>
 					<button class="qbtn-tmp"><ion-icon></ion-icon></button>
 					<button class="qbtn-delete" title="${Lang.get("delete")}"><ion-icon name="close"></ion-icon></button>
 				</span>

@@ -255,6 +255,12 @@ typedef WsEvent = {
 	?setNextItem:{
 		pos:Int
 	},
+	?moveItemDown:{
+		pos:Int
+	},
+    ?moveItemUp:{
+        pos:Int
+    },
 	?toggleItemType:{
 		pos:Int
 	},
@@ -296,6 +302,8 @@ enum abstract WsEventType(String) {
 	var SetLeader;
 	var PlayItem;
 	var SetNextItem;
+	var MoveItemDown;
+	var MoveItemUp;
 	var ToggleItemType;
 	var ClearChat;
 	var ClearPlaylist;

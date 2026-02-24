@@ -49,7 +49,7 @@
     <section id="playlist">
       <!-- Playlist info -->
       <div class="info playlist-info">
-        <header>
+        <header style="width: 100%;">
           <h3>${playlist}</h3>
           <button id="lockplaylist" title="${playlistOpen}">
             <ion-icon name="lock-open"></ion-icon>
@@ -57,6 +57,46 @@
           <button id="getplaylist" title="${retrievePlaylistLinks}">
             <ion-icon name="link"></ion-icon>
           </button>
+
+            <!-- Add video -->
+            <div id="addfromurl" class="collapsible" aria-expanded="false" style="margin-left: auto;">
+                <div class="collapse-list">
+                    <div class="display-flex">
+                        <button id="insert_template" title="${addTemplateUrl}" style="display: none;">
+                            <div>&gt;</div>
+                        </button>
+                        <div class="mediaurl-wrap">
+                            <input id="mediaurl" type="text" placeholder="${addVideoFromUrl}">
+                            <button id="queue_end">Add</button>
+                            <button id="mediaurl-upload" style="display: none;">
+                                <ion-icon name="cloud-upload"></ion-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="mediatitleblock" class="display-flex" style="display: none;">
+                        <input id="mediatitle" type="text" placeholder="${optionalTitle}">
+                    </div>
+                    <div id="subsurlblock" class="display-flex" style="display: none;">
+                        <input id="subsurl" type="text" placeholder="${subtitlesUrlOptional}">
+                    </div>
+                    <div id="voiceoverblock" class="display-flex" style="display: none;">
+                        <input id="voiceoverurl" type="text" placeholder="${voiceOverAudioTrackUrlOptional}">
+                    </div>
+                    <div class="checkbox-row" style="display: none;">
+                        <label class="checkbox-row-item">
+                            <input id="add-temp" class="add-temp" type="checkbox" checked>${addAsTemporary}
+                        </label>
+                        <label class="checkbox-row-item">
+                            <input id="cache-on-server" type="checkbox">${cacheOnServer}
+                        </label>
+                    </div>
+                    <div class="queue-buttons" style="display: none;">
+                        <button id="queue_next">${queueNext}</button>
+
+                    </div>
+                </div>
+            </div>
+
         </header>
         <!-- Playlist controls -->
         <span class="controls">
@@ -84,43 +124,6 @@
         <span>
           <ion-icon name="time"></ion-icon><span id="pllength">00:00</span>
         </span>
-      </div>
-      <!-- Add video -->
-      <div id="addfromurl" class="collapsible collapse" aria-expanded="false">
-        <div class="collapse-list">
-          <div class="display-flex">
-            <button id="insert_template" title="${addTemplateUrl}">
-              <div>&gt;</div>
-            </button>
-            <div class="mediaurl-wrap">
-              <input id="mediaurl" type="text" placeholder="${addVideoFromUrl}">
-              <button id="mediaurl-upload">
-                <ion-icon name="cloud-upload"></ion-icon>
-              </button>
-            </div>
-          </div>
-          <div id="mediatitleblock" class="display-flex" style="display: none;">
-            <input id="mediatitle" type="text" placeholder="${optionalTitle}">
-          </div>
-          <div id="subsurlblock" class="display-flex" style="display: none;">
-            <input id="subsurl" type="text" placeholder="${subtitlesUrlOptional}">
-          </div>
-          <div id="voiceoverblock" class="display-flex" style="display: none;">
-            <input id="voiceoverurl" type="text" placeholder="${voiceOverAudioTrackUrlOptional}">
-          </div>
-          <div class="checkbox-row">
-            <label class="checkbox-row-item">
-              <input id="add-temp" class="add-temp" type="checkbox" checked>${addAsTemporary}
-            </label>
-            <label class="checkbox-row-item">
-              <input id="cache-on-server" type="checkbox">${cacheOnServer}
-            </label>
-          </div>
-          <div class="queue-buttons">
-            <button id="queue_next">${queueNext}</button>
-            <button id="queue_end">${queueLast}</button>
-          </div>
-        </div>
       </div>
       <!-- Add iframe -->
       <div class="collapsible collapse" id="customembed" aria-expanded="false">

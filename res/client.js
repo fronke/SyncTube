@@ -778,28 +778,6 @@ client_Buttons.init = function(main) {
 	};
 	var mediaUrl = window.document.querySelector("#mediaurl");
 	var checkboxCache = window.document.querySelector("#cache-on-server");
-	mediaUrl.oninput = function() {
-		var url = mediaUrl.value;
-		var playerType = main.getLinkPlayerType(url);
-		var isSingle = main.isSingleVideoUrl(url);
-		var isSingleRawVideo = url != "" && playerType == "RawType" && isSingle;
-		window.document.querySelector("#mediatitleblock").style.display = isSingleRawVideo ? "" : "none";
-		window.document.querySelector("#subsurlblock").style.display = isSingleRawVideo ? "" : "none";
-		var tmp = url.length > 0 && isSingle;
-		window.document.querySelector("#voiceoverblock").style.display = tmp ? "" : "none";
-		var isExternal = main.isExternalVideoUrl(url);
-		checkboxCache.parentElement.style.display = isSingle && isExternal && main.playersCacheSupport.indexOf(playerType) != -1 ? "" : "none";
-		checkboxCache.checked = client_Buttons.settings.checkedCache.indexOf(playerType) != -1;
-		var panel = window.document.querySelector("#addfromurl");
-		var oldH = panel.style.height;
-		panel.style.height = "";
-		var newH = client_Utils.outerHeight(panel) + "px";
-		panel.style.height = oldH;
-		return haxe_Timer.delay(function() {
-			panel.style.height = newH;
-		},0);
-	};
-	mediaUrl.onfocus = mediaUrl.oninput;
 	checkboxCache.addEventListener("change",function() {
 		var url = mediaUrl.value;
 		var playerType = main.getLinkPlayerType(url);

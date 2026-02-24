@@ -35,6 +35,8 @@
 	"addedBy": "Added by",
 	"play": "Play",
 	"setNext": "Next",
+	"moveDown": "Move Down",
+	"moveUp": "Move Up",
 	"makePermanent": "Make Permanent",
 	"makeTemporary": "Make Temporary",
 	"delete": "Delete",

@@ -35,6 +35,8 @@
 	"addedBy": "Добавлено",
 	"play": "Воспроизвести",
 	"setNext": "Следующее",
+	"moveDown": "Вниз",
+	"moveUp": "Вверх",
 	"makePermanent": "Закрепить",
 	"makeTemporary": "Открепить",
 	"delete": "Удалить",

@@ -72,6 +72,24 @@ class VideoList {
 		items.insert(pos + 1, next);
 	}
 
+	public function moveItemDown(itemPos:Int):Void {
+		if (itemPos >= items.length - 1) return;
+		final item = items[itemPos];
+		items.remove(item);
+		if (itemPos < pos) pos--;
+		else if (itemPos == pos) pos++;
+		items.insert(itemPos + 1, item);
+	}
+
+	public function moveItemUp(itemPos:Int):Void {
+		if (itemPos <= 1) return;
+		final item = items[itemPos];
+		items.remove(item);
+		if (itemPos < pos) pos--;
+		else if (itemPos == pos) pos++;
+		items.insert(itemPos - 1, item);
+	}
+
 	public function toggleItemType(pos:Int):Void {
 		items[pos].isTemp = !items[pos].isTemp;
 	}

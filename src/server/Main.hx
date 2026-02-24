@@ -957,6 +957,24 @@ class Main {
 				videoList.setNextItem(pos);
 				broadcast(data);
 
+			case MoveItemDown:
+				if (isPlaylistLockedFor(client)) return;
+				if (!checkPermission(client, ChangeOrderPerm)) return;
+				final pos = data.moveItemDown.pos;
+				if (!videoList.hasItem(pos)) return;
+				if (pos == videoList.pos || pos == videoList.pos - 1) return;
+				videoList.moveItemDown(pos);
+				broadcast(data);
+
+			case MoveItemUp:
+                if (isPlaylistLockedFor(client)) return;
+                if (!checkPermission(client, ChangeOrderPerm)) return;
+                final pos = data.moveItemUp.pos;
+                if (!videoList.hasItem(pos)) return;
+                if (pos == videoList.pos || pos == videoList.pos - 1) return;
+                videoList.moveItemUp(pos);
+                broadcast(data);
+
 			case ToggleItemType:
 				if (isPlaylistLockedFor(client)) return;
 				if (!checkPermission(client, ToggleItemTypePerm)) return;

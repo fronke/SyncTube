@@ -678,6 +678,12 @@ class Main {
 			case SetNextItem:
 				player.setNextItem(data.setNextItem.pos);
 
+			case MoveItemDown:
+				player.moveItemDown(data.moveItemDown.pos);
+
+			case MoveItemUp:
+            	player.moveItemUp(data.moveItemUp.pos);
+
 			case ToggleItemType:
 				player.toggleItemType(data.toggleItemType.pos);
 
